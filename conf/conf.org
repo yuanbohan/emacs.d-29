@@ -1,0 +1,487 @@
+* backup and auto-saving
+
+#+BEGIN_SRC emacs-lisp
+  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html
+  ;; M-x do-auto-save   : perform an auto-save explicitly
+  ;; M-x auto-save-mode : To toggle auto-saving in the current buffer
+  ;; (setq auto-save-default t)
+  ;; (setq auto-save-timeout 2)
+  ;; (setq auto-save-interval 20)
+  ;; (setq auto-save-visited-mode t)
+  ;; (setq auto-save-visited-interval 2)
+
+  ;; https://www.emacswiki.org/emacs/BackupDirectory
+  (setq backup-directory-alist
+	`((".*" . "~/.emacs.d/backup/")))
+  (setq auto-save-file-name-transforms
+	`((".*" "~/.emacs.d/backup/" t)))
+#+END_SRC
+
+* font
+
+https://www.jetbrains.com/lp/mono/
+
+#+BEGIN_SRC emacs-lisp
+  (set-frame-font "JetBrains Mono 14" nil t)
+#+END_SRC
+
+* global ui
+
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-screen t) ; hide the welcome screen
+  ;; (setq initial-major-mode 'fundamental-mode) ; change *scratch* major mode
+  ;; (setq initial-scratch-message "\
+  ;; # This buffer is for notes you don't want to save") ; change message in *scratch*
+  (menu-bar-mode -1) ; show/hide menu bar
+  (tool-bar-mode -1) ; show/hide tool bar
+  (scroll-bar-mode -1) ; show/hide scroll bar
+  (display-line-numbers-mode -1)
+  ;; (visual-line-mode 1) ; word wrap
+  (global-hl-line-mode 1) ; highlight current line
+  (setq column-number-mode t)
+#+END_SRC
+
+* browse-at-remote
+
+#+begin_src emacs-lisp
+  (use-package browse-at-remote
+    :ensure t
+    :bind (("C-c r" . 'browse-at-remote)))
+#+end_src
+
+* global set key
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "s-/") 'comment-line)
+#+END_SRC
+
+* theme
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package doom-themes
+  ;;   :ensure t
+  ;;   :config
+
+  ;;   ;; Global settings (defaults)
+  ;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+  ;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;;   (load-theme 'doom-one t)
+
+  ;;   ;; Enable flashing mode-line on errors
+  ;;   (doom-themes-visual-bell-config)
+
+  ;;   ;; Corrects (and improves) org-mode's native fontification.
+  ;;   (doom-themes-org-config))
+
+
+  ;; M-x color-theme-sanityinc-tomorrow-day
+  ;; M-x color-theme-sanityinc-tomorrow-night
+  ;; M-x color-theme-sanityinc-tomorrow-blue
+  ;; M-x color-theme-sanityinc-tomorrow-bright
+  ;; M-x color-theme-sanityinc-tomorrow-eighties
+  (use-package color-theme-sanityinc-tomorrow
+    :ensure t
+    :config
+    (require 'color-theme-sanityinc-tomorrow))
+
+  ;; (use-package dracula-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   (load-theme 'dracula t))
+
+  ;; (use-package zenburn-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   (load-theme 'zenburn t))
+
+  ;; (use-package solarized-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; (load-theme 'solarized-light t)
+  ;;   (load-theme 'solarized-dark t)
+  ;;   )
+
+  ;; (use-package spacemacs-theme
+  ;;   :defer t
+  ;;   :init (load-theme 'spacemacs-dark t))
+
+  ;; (use-package nord-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; (add-to-list 'custom-theme-load-path
+  ;;   ;;              (expand-file-name "~/.emacs.d/themes/"))
+  ;;   (load-theme 'nord t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :defer 5
+    :config
+    (yas-reload-all)
+    (setq yas-wrap-around-region t)
+    :hook (('prog-mode     . 'yas-minor-mode)
+	   ('org-mode      . 'yas-minor-mode)
+	   ('LaTeX-mode    . 'yas-minor-mode)
+	   ('markdown-mode . 'yas-minor-mode)))
+
+  (use-package yasnippet-snippets
+    :ensure t
+    :after yasnippet)
+#+END_SRC
+
+* multiple cursor
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :defer 5
+    :bind
+    (("C-x C-v" . 'mc/edit-lines)
+     ("C->" . 'mc/mark-next-like-this)
+     ("C-<" . 'mc/mark-previous-like-this)
+     ("C-x C-a" . 'mc/mark-all-like-this)))
+#+END_SRC
+
+* magit & forge
+
+** cherry pick
+
+[[https://emacs.stackexchange.com/questions/10611/how-to-easily-cherry-pick-with-magit][cherry pick with magit]]
+[[https://www.emacswiki.org/emacs/MagitCherryPick][magit cherry pick]]
+
+
+- ~M-x magit-status~ to enter open a Magit buffer
+- ~b v~ to list current branches
+- select branch to receive patch, RET to checkout
+- ~l rl~ to list patches from this branch to the branch with the cherries (or l rL, long diff)
+- select the patch to cherry-pick
+- ~A~ to bring the patch onto the current branch
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind (("C-x g"   . 'magit-status)
+	   ("C-c g"   . 'magit-dispatch-popup)
+	   ("C-c M-g" . 'magit-file-dispatch)))
+
+  ;; (use-package forge
+  ;;   :ensure t
+  ;;   :after magit)
+#+END_SRC
+
+* ace window
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :bind (("M-o" . 'ace-window)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :hook
+    (('prog-mode                . 'smartparens-mode)
+     ('LaTeX-mode               . 'smartparens-mode)
+     ('eshell-mode              . 'smartparens-mode)
+     ('cider-mode               . 'smartparens-mode)
+     ('cider-repl-mode          . 'smartparens-mode))
+
+    :bind
+    (("C-M-a"     . 'sp-beginning-of-sexp)
+     ("C-M-e"     . 'sp-end-of-sexp)
+     ("C-M-f"     . 'sp-forward-sexp)
+     ("C-M-b"     . 'sp-backward-sexp)
+     ("C-M-n"     . 'sp-next-sexp)
+     ("C-M-p"     . 'sp-previous-sexp)
+     ("C-S-f"     . 'sp-forward-symbol)
+     ("C-S-b"     . 'sp-backward-symbol)
+     ("C-M-k"     . 'sp-kill-sexp)
+     ("C-M-w"     . 'sp-copy-sexp)
+     ("C-k"       . 'sp-kill-hybrid-sexp)
+     ("M-k"       . 'sp-backward-kill-sexp)))
+#+END_SRC
+
+* coding
+** eglot
+
+#+begin_src elisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; for Go
+    ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md#configuring-eglot
+  (defun project-find-go-module (dir)
+    (when-let ((root (locate-dominating-file dir "go.mod")))
+      (cons 'go-module root)))
+
+  (cl-defmethod project-root ((project (head go-module)))
+    (cdr project))
+
+  (defun eglot-format-buffer-on-save ()
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+
+  (use-package eglot
+    :config
+    ;; for Go
+    (add-hook 'project-find-functions #'project-find-go-module)
+    (add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+
+    :bind
+    (("C-s-e" . 'eglot)
+     ("C-s-r" . 'eglot-rename)
+     ("C-s-'" . 'eglot-code-actions)
+
+     ("C-s-p" . 'flymake-goto-prev-error)
+     ("C-s-n" . 'flymake-goto-next-error)
+     ("C-s-b" . 'flymake-show-buffer-diagnostics)
+     ("C-s-s" . 'flymake-show-project-diagnostics)))
+#+end_src
+
+** go
+
+#+begin_src emacs-lisp
+  (use-package go-mode
+    :ensure t
+    :defer 5
+    :bind
+    (("C-c C-c C-t" . 'go-test-current-test)
+     ("C-c C-c C-f" . 'go-test-current-file)
+     ("C-c C-c C-r" . 'go-run)))
+#+end_src
+
+** rust
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :ensure t
+    :defer 5
+    :config
+    (setq rust-format-on-save t))
+#+END_SRC
+
+* company
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :hook ('prog-mode . 'global-company-mode)
+    :config
+    (company-tng-configure-default)
+    (setq company-idle-delay 0.5)
+    (setq company-minimum-prefix-length 3)
+    (setq company-selection-wrap-around t)
+    (setq company-tooltip-align-annotations t))
+#+END_SRC
+
+* expand region
+
+#+BEGIN_SRC emacs-lisp
+  ;; C-- C-= : contract the region
+  (use-package expand-region
+    :ensure t
+    :defer 5
+    :bind
+    ("C-=" . 'er/expand-region))
+#+END_SRC
+
+* ivy
+
+- [[https://oremacs.com/swiper][ivy user manual]]
+- [[https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html][ivy demo]]
+
+| Key        | Command                 | Description                                    |
+|------------+-------------------------+------------------------------------------------|
+| M-n        | ivy-next-line           | Next line                                      |
+| M-p        | ivy-previous-line       | Previous line                                  |
+| M-<        | ivy-beginning-of-buffer | Beginning of the Ivy minibuffer                |
+| M->        | ivy-end-of-buffer       | End of the Ivy minibuffer                      |
+| C-v        | ivy-scroll-up-command   | Page up by one Ivy buffer size                 |
+| M-v        | ivy-scroll-down-command | Page down by one Ivy buffer size               |
+| C-m or RET | ivy-done                | Calls the default action                       |
+| ~C-M-m~      | ivy-call                | Calls the default action, keeps Ivy open       |
+| ~M-o~        | ivy-dispatching-done    | Displays the available actions                 |
+| ~C-M-o~      | ivy-dispacthing-call    | Displays available actions, keeps Ivy open     |
+| C-'        | ivy-avy                 | Uses Avy to select candidates                  |
+| TAB        | ivy-partial-or-done     | Tab completion, repeated presses may call done |
+|            | ivy-resume              | Restart Ivy before last action                 |
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :ensure t
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    ;; (setq ivy-wrap t)
+    :bind
+    (("C-s"     . 'swiper-isearch)
+     ("M-x"     . 'counsel-M-x)
+     ("M-y"     . 'counsel-yank-pop)
+     ("C-x C-f" . 'counsel-find-file)
+     ("C-x b"   . 'ivy-switch-buffer)
+
+     ;; ("M-n" . ivy-next-history-element)
+     ;; ("M-p" . ivy-previous-history-element)
+     ;; ("M-i" . ivy-insert-current)
+     ("M-j" . 'ivy-yank-word) ;; C-s M-j this will search symbol at point
+
+     ;; ("C-c C-r" . 'ivy-resume)
+     ;; ("C-c v"   . 'ivy-push-view)
+     ;; ("C-c V"   . 'ivy-pop-view)
+     ("C-c k"   . 'counsel-rg)
+     ;; ("C-c l"   . 'counsel-locate)
+     ;; ("C-c g"   . 'counsel-git)
+     ;; ("C-c j"   . 'counsel-git-grep)
+     ;; ("C-S-o"   . 'counsel-rhythmbox)
+     ("C-*"     . 'swiper-thing-at-point)
+     ))
+
+
+  (use-package counsel-tramp
+    :ensure t
+    :after counsel)
+#+END_SRC
+
+* whitespace cleanup
+
+#+BEGIN_SRC emacs-lisp
+  ;;;; trailing whitespace
+  ;; https://stackoverflow.com/questions/34531831/highlighting-trailing-whitespace-in-emacs-without-changing-character
+  ;; (setq-default show-trailing-whitespace t)
+
+  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
+  ;; (global-whitespace-mode)
+
+  (use-package whitespace-cleanup-mode
+    :ensure t
+    :bind (("C-c C-SPC". 'whitespace-cleanup))
+    :hook
+    (('prog-mode . 'whitespace-cleanup-mode)
+     ('before-save . 'whitespace-cleanup)))
+#+END_SRC
+
+* project
+
+| command                    | description                                                                                                        |
+|----------------------------+--------------------------------------------------------------------------------------------------------------------|
+| C-x p f                    | Visit a file that belongs to the current project (project-find-file).                                              |
+| C-x p g                    | Find matches for a regexp in all files that belong to the current project (project-find-regexp).                   |
+| M-x projyect-search        | Interactively search for regexp matches in all files that belong to the current project.                           |
+| C-x p r                    | Perform query-replace for a regexp in all files that belong to the current project (project-query-replace-regexp). |
+| C-x p d                    | Run Dired in the current project’s root directory (project-dired).                                                 |
+| C-x p v                    | Run vc-dir in the current project’s root directory (project-vc-dir).                                               |
+| C-x p s                    | Start an inferior shell in the current project’s root directory (project-shell).                                   |
+| C-x p e                    | Start Eshell in the current project’s root directory (project-eshell).                                             |
+| C-x p c                    | Run compilation in the current project’s root directory (project-compile).                                         |
+| C-x p !                    | Run shell command in the current project’s root directory (project-shell-command).                                 |
+| C-x p &                    | Run shell command asynchronously in the current project’s root directory (project-async-shell-command).            |
+|----------------------------+--------------------------------------------------------------------------------------------------------------------|
+| C-x p b                    | Switch to another buffer belonging to the current project (project-switch-to-buffer).                              |
+| C-x p C-b                  | List the project buffers (project-list-buffers).                                                                   |
+| C-x p k                    | Kill all live buffers that belong to the current project (project-kill-buffers).                                   |
+|----------------------------+--------------------------------------------------------------------------------------------------------------------|
+| C-x p p                    | Run an Emacs command for another project (project-switch-project).                                                 |
+| M-x project-forget-project | Remove a known project from the project-list-file.                                                                 |
+
+#+begin_src emacs-lisp
+  (use-package package
+    :ensure t
+    :bind-keymap
+    ("s-p" . project-prefix-map))
+#+end_src
+
+* treemacs
+
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :ensure t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+	    treemacs-deferred-git-apply-delay        0.5
+	    treemacs-directory-name-transformer      #'identity
+	    treemacs-display-in-side-window          t
+	    treemacs-eldoc-display                   'simple
+	    treemacs-file-event-delay                2000
+	    treemacs-file-extension-regex            treemacs-last-period-regex-value
+	    treemacs-file-follow-delay               0.2
+	    treemacs-file-name-transformer           #'identity
+	    treemacs-follow-after-init               t
+	    treemacs-expand-after-init               t
+	    treemacs-find-workspace-method           'find-for-file-or-pick-first
+	    treemacs-git-command-pipe                ""
+	    treemacs-goto-tag-strategy               'refetch-index
+	    treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+	    treemacs-hide-dot-git-directory          t
+	    treemacs-indentation                     2
+	    treemacs-indentation-string              " "
+	    treemacs-is-never-other-window           nil
+	    treemacs-max-git-entries                 5000
+	    treemacs-missing-project-action          'ask
+	    treemacs-move-forward-on-expand          nil
+	    treemacs-no-png-images                   nil
+	    treemacs-no-delete-other-windows         t
+	    treemacs-project-follow-cleanup          nil
+	    treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+	    treemacs-position                        'left
+	    treemacs-read-string-input               'from-child-frame
+	    treemacs-recenter-distance               0.1
+	    treemacs-recenter-after-file-follow      nil
+	    treemacs-recenter-after-tag-follow       nil
+	    treemacs-recenter-after-project-jump     'always
+	    treemacs-recenter-after-project-expand   'on-distance
+	    treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+	    treemacs-project-follow-into-home        nil
+	    treemacs-show-cursor                     nil
+	    treemacs-show-hidden-files               t
+	    treemacs-silent-filewatch                nil
+	    treemacs-silent-refresh                  nil
+	    treemacs-sorting                         'alphabetic-asc
+	    treemacs-select-when-already-in-treemacs 'move-back
+	    treemacs-space-between-root-nodes        t
+	    treemacs-tag-follow-cleanup              t
+	    treemacs-tag-follow-delay                1.5
+	    treemacs-text-scale                      nil
+	    treemacs-user-mode-line-format           nil
+	    treemacs-user-header-line-format         nil
+	    treemacs-wide-toggle-width               70
+	    treemacs-width                           35
+	    treemacs-width-increment                 1
+	    treemacs-width-is-initially-locked       t
+	    treemacs-workspace-switch-cleanup        nil)
+
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      ;;(treemacs-resize-icons 44)
+
+      ;; (treemacs-follow-mode t)
+      ;; (treemacs-filewatch-mode t)
+      ;; (treemacs-fringe-indicator-mode 'always)
+      ;; (when treemacs-python-executable
+      ;;   (treemacs-git-commit-diff-mode t))
+
+      ;; (pcase (cons (not (null (executable-find "git")))
+      ;;              (not (null treemacs-python-executable)))
+      ;;   (`(t . t)
+      ;;    (treemacs-git-mode 'deferred))
+      ;;   (`(t . _)
+      ;;    (treemacs-git-mode 'simple)))
+
+      (treemacs-hide-gitignored-files-mode nil))
+    :bind
+    (:map global-map
+	  ;; ("M-0"       . treemacs-select-window)
+	  ;; ("C-x t 1"   . treemacs-delete-other-windows)
+	  ;; ("C-x t t"   . treemacs)
+	  ("s-t"       . treemacs)
+	  ;; ("C-x t d"   . treemacs-select-directory)
+	  ;; ("C-x t B"   . treemacs-bookmark)
+	  ;; ("C-x t C-t" . treemacs-find-file)
+	  ;; ("C-x t M-t" . treemacs-find-tag)
+	  ))
+#+end_src

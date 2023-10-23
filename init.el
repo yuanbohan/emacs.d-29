@@ -5,11 +5,11 @@
 ;; Define package repositories
 (require 'package)
  (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.org/packages/") t)
+         '("melpa" . "http://melpa.org/packages/") t)
 ;; (add-to-list 'package-archives
 ;;              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
-	     '("gnu-devel" . "https://elpa.gnu.org/devel/") t)
+         '("gnu-devel" . "https://elpa.gnu.org/devel/") t)
 
 (package-initialize)
 

@@ -59,6 +59,27 @@ https://www.jetbrains.com/lp/mono/
 * global set key
 
 #+BEGIN_SRC emacs-lisp
+  (defun copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring"
+    (interactive "p")
+    (kill-ring-save (line-beginning-position)
+                    (line-beginning-position (+ 1 arg)))
+    (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+  ;; optional key binding
+  (global-set-key (kbd "C-c C-k")'copy-line)
+
+  (defun duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+  (global-set-key (kbd "C-c M-k") 'duplicate-line)
+
+  (global-set-key (kbd "s-l") 'goto-line)
+
   (global-set-key (kbd "s-/") 'comment-line)
 #+END_SRC
 

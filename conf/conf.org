@@ -22,7 +22,7 @@
 https://www.jetbrains.com/lp/mono/
 
 #+BEGIN_SRC emacs-lisp
-  (set-frame-font "JetBrains Mono 14" nil t)
+  (set-frame-font "JetBrains Mono 10" nil t)
 #+END_SRC
 
 * global ui
@@ -47,14 +47,11 @@ https://www.jetbrains.com/lp/mono/
   (setq-default tab-width 4)
   (setq indent-line-function 'insert-tab)
 #+END_SRC
+* yes-or-no
 
-* browse-at-remote
-
-#+begin_src emacs-lisp
-  (use-package browse-at-remote
-    :ensure t
-    :bind (("C-c r" . 'browse-at-remote)))
-#+end_src
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
+#+END_SRC
 
 * global set key
 
@@ -503,7 +500,7 @@ https://www.jetbrains.com/lp/mono/
       (treemacs-hide-gitignored-files-mode nil))
     :bind
     (:map global-map
-      ;; ("M-0"       . treemacs-select-window)
+      ("M-0"       . treemacs-select-window)
       ;; ("C-x t 1"   . treemacs-delete-other-windows)
       ;; ("C-x t t"   . treemacs)
       ("s-t"       . treemacs)
@@ -527,4 +524,12 @@ https://emacs-tree-sitter.github.io/
 
   (use-package tree-sitter-langs
     :ensure t)
+#+end_src
+
+* browse-at-remote
+
+#+begin_src emacs-lisp
+  (use-package browse-at-remote
+    :ensure t
+    :bind (("C-c r" . 'browse-at-remote)))
 #+end_src

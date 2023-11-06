@@ -29,7 +29,7 @@ https://www.jetbrains.com/lp/mono/
 
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-screen t) ; hide the welcome screen
-  ;; (setq initial-major-mode 'fundamental-mode) ; change *scratch* major mode
+  (setq initial-major-mode 'fundamental-mode) ; change *scratch* major mode
   ;; (setq initial-scratch-message "\
   ;; # This buffer is for notes you don't want to save") ; change message in *scratch*
   (menu-bar-mode -1) ; show/hide menu bar
@@ -292,8 +292,8 @@ https://www.jetbrains.com/lp/mono/
     :hook ('prog-mode . 'global-company-mode)
     :config
     (company-tng-configure-default)
-    (setq company-idle-delay 5)
-    (setq company-minimum-prefix-length 5)
+    (setq company-idle-delay 1)
+    (setq company-minimum-prefix-length 3)
     (setq company-selection-wrap-around t)
     (setq company-tooltip-align-annotations t))
 #+END_SRC
@@ -338,7 +338,7 @@ https://www.jetbrains.com/lp/mono/
     (setq ivy-use-virtual-buffers t)
     (setq enable-recursive-minibuffers t)
     (setq ivy-count-format "(%d/%d) ")
-    ;; (setq ivy-wrap t)
+    (setq ivy-wrap t)
     :bind
     (("C-s"     . 'swiper-isearch)
      ("M-x"     . 'counsel-M-x)
@@ -346,9 +346,9 @@ https://www.jetbrains.com/lp/mono/
      ("C-x C-f" . 'counsel-find-file)
      ("C-x b"   . 'ivy-switch-buffer)
 
-     ;; ("M-n" . ivy-next-history-element)
-     ;; ("M-p" . ivy-previous-history-element)
-     ;; ("M-i" . ivy-insert-current)
+     ("M-n" . ivy-next-history-element)
+     ("M-p" . ivy-previous-history-element)
+     ("M-i" . ivy-insert-current)
      ("M-j" . 'ivy-yank-word) ;; C-s M-j this will search symbol at point
 
      ;; ("C-c C-r" . 'ivy-resume)
@@ -361,7 +361,6 @@ https://www.jetbrains.com/lp/mono/
      ;; ("C-S-o"   . 'counsel-rhythmbox)
      ("C-*"     . 'swiper-thing-at-point)
      ))
-
 
   (use-package counsel-tramp
     :ensure t
@@ -533,3 +532,12 @@ https://emacs-tree-sitter.github.io/
     :ensure t
     :bind (("C-c r" . 'browse-at-remote)))
 #+end_src
+
+* which key
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
+#+END_SRC

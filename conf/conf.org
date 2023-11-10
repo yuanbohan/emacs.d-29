@@ -25,7 +25,7 @@ https://www.jetbrains.com/lp/mono/
   (set-frame-font "JetBrains Mono 10" nil t)
 #+END_SRC
 
-* global ui
+* global
 
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-screen t) ; hide the welcome screen
@@ -412,7 +412,7 @@ https://www.jetbrains.com/lp/mono/
   (use-package package
     :ensure t
     :bind-keymap
-    ("s-p" . project-prefix-map))
+    ("C-c p" . project-prefix-map))
 #+end_src
 
 * treemacs
@@ -502,7 +502,7 @@ https://www.jetbrains.com/lp/mono/
       ("M-0"       . treemacs-select-window)
       ;; ("C-x t 1"   . treemacs-delete-other-windows)
       ;; ("C-x t t"   . treemacs)
-      ("s-t"       . treemacs)
+      ("C-c t"       . treemacs)
       ;; ("C-x t d"   . treemacs-select-directory)
       ;; ("C-x t B"   . treemacs-bookmark)
       ;; ("C-x t C-t" . treemacs-find-file)
